@@ -1,0 +1,54 @@
+---
+
+- selinux:
+    policy: targeted
+    state: permissive
+
+- name: Install packages for Apache
+  yum:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items:
+    - "httpd"
+    - "mod_wsgi"
+
+- name: Enables the Apache2 module "wsgi"
+  apache2_module:
+    state: present
+    name: wsgi
+
+- name: Copy httpd conf files
+  copy:
+    src: "apache-conf/{{ item }}"
+    dest: "/etc/httpd/conf.d/{{ item }}"
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - "default.conf.bak"
+    - "host.conf"
+    - "virtual-directory.conf"
+  notify:
+    - "restart httpd"
+
+- name: Set symbolic links for file editing
+  file:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    state: link
+  with_items:
+    - info:
+      src: /etc/httpd/conf.d/
+      dest: /root/httpd-conf.d
+    - info:
+      src: /var/www/
+      dest: /root/www
+
+- name: Start the service and enable on startup
+  service:
+    name: "{{ item }}"
+    enabled: yes
+    state: started
+  with_items:
+    - httpd

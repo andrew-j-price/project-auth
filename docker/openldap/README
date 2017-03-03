@@ -1,0 +1,6 @@
+# Build
+docker build --tag="auth_openldap" .
+
+# Run
+docker run -d -p 1389:389 --restart=always auth_openldap
+docker run -d -net=host auth_openldap

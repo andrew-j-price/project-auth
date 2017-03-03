@@ -1,0 +1,6 @@
+# Build
+docker build --tag="auth_389ds" .
+
+# Run
+docker run -d -p 2389:389 --restart=always auth_389ds
+docker run -d --net=host auth_389ds

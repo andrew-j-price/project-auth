@@ -1,0 +1,40 @@
+dn: dc=example,dc=com
+dc: example
+objectClass: dcObject
+objectClass: top
+objectClass: organization
+o: example.com
+
+dn: cn=admin,dc=example,dc=com
+objectClass: simpleSecurityObject
+objectClass: organizationalRole
+cn: admin
+userPassword: Password123
+description: LDAP administrator
+
+dn: ou=users,dc=example,dc=com
+objectClass: organizationalUnit
+objectClass: top
+ou: users
+
+dn: uid=andrpric,ou=users,dc=example,dc=com
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+objectClass: inetOrgPerson
+givenName: Andrew
+uid: andrpric
+sn: Price
+cn: Andrew Price
+userPassword: Password123
+
+dn: uid=jsmith,ou=users,dc=example,dc=com
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+objectClass: inetOrgPerson
+givenName: John
+uid: jdoe
+sn: Doe
+cn: John Doe
+userPassword: Password123

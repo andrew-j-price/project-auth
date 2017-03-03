@@ -1,0 +1,9 @@
+<VirtualHost *:80>
+    ServerName flask.example.com
+    WSGIScriptAlias / /var/www/apps/my_app/wsgi.py
+    WSGIDaemonProcess my_app user=apache group=apache processes=5 threads=2
+    <Directory /var/www/apps/my_app/>
+        Order deny,allow
+        Allow from all
+    </Directory>
+</VirtualHost>

@@ -1,0 +1,58 @@
+---
+
+- name: Install EPEL
+  yum:
+    name: "{{ item }}"
+    state: latest
+    update_cache: yes
+  with_items:
+    - epel-release
+
+- name: Copy Docker yum repo file
+  copy:
+    src: yum_repos/docker.repo
+    dest: /etc/yum.repos.d/docker.repo
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Install the 'Development tools' package group
+  yum:
+    name: "@Development tools"
+    state: present
+
+- name: Install packages on RHEL based
+  yum:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items:
+    - docker-engine
+    - gcc
+    - git
+    - java-1.8.0-openjdk
+    - java-1.8.0-openjdk-devel
+    - lsof
+    - make
+    - monit
+    - nc
+    - net-tools
+    - nmap
+    - npm
+    - openldap-clients
+    - openldap-devel
+    - python-devel
+    - python-pip
+    - python-setuptools
+    - tcpdump
+    - unzip
+    - vim
+    - wget
+
+- name: Start the service and enable on startup on RHEL based systems
+  service:
+    name: "{{ item }}"
+    enabled: yes
+    state: started
+  with_items:
+    - docker

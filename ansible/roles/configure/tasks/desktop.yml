@@ -1,0 +1,87 @@
+---
+
+- name: Install Desktop Packages
+  yum:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items:
+    - "@X Window System"
+    - "@Xfce"
+    - dkms
+    - firefox
+    - gvfs
+    - kernel-devel
+    - nmap-frontend
+    - wireshark
+
+- name: get default runlevel
+  command: "systemctl get-default"
+  register: runlevel
+
+- name: Set graphical runlevel
+  command: "systemctl set-default graphical.target"
+  when: runlevel.stdout != "graphical.target"
+
+- name: is graphical currently active
+  command: "systemctl is-active graphical.target"
+  register: graphical
+  ignore_errors: true  # return code is "3" when inactive
+
+- name: Switch to graphical runlevel
+  command: "systemctl isolate graphical.target"
+  when: graphical.stdout != "active"
+
+- name: Download atom
+  get_url:
+    url: "{{ atom_source_location }}"
+    dest: "{{ atom_download_destination }}"
+    mode: "0774"
+  register: atom_downloaded
+  tags:
+    - rpm
+    - atom
+
+- name: Install atom package
+  yum:
+    name: "{{ atom_download_destination }}"
+  when: atom_downloaded.changed
+  tags:
+    - rpm
+    - atom
+
+- name: Download apache directory studio
+  get_url:
+    url: "{{ directory_studio_source_location }}"
+    dest: "{{ directory_studio_download_destination }}"
+    checksum: "md5:{{ directory_studio_checksum }}"
+  register: directory_studio_downloaded
+  tags:
+    - directory
+
+- name: Extract apache directory studio
+  unarchive:
+    src: "{{ directory_studio_download_destination }}"
+    dest: "/root"
+    copy: no
+  when: directory_studio_downloaded.changed
+  tags:
+    - directory
+
+- name: Download Virtualbox Guest Additions
+  get_url:
+    url: "{{ virtualbox_guest_source_location }}"
+    dest: "{{ virtualbox_guest_destination }}"
+    checksum: "md5:{{ virtualbox_guest_checksum }}"
+    mode: "0664"
+  register: virtualbox_guest_downloaded
+  tags:
+    - vbox
+    - virtulbox
+
+- name: Install Virtualbox Guest Additions
+  command: "{{ item }}"
+  with_items:
+    - "mount {{ virtualbox_guest_destination }} -o loop /mnt"
+    - "/mnt/VBoxLinuxAdditions.run"
+  when: virtualbox_guest_downloaded.changed

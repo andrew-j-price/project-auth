@@ -1,0 +1,44 @@
+---
+
+- name: Configure environment on CentOS/RHEL
+  include: rhel-based.yml
+  when: ansible_os_family =='RedHat' and ansible_distribution !='Fedora'
+  tags:
+    - centos
+    - rhel
+    - redhat
+
+- name: Install Python Packages
+  include: pip.yml
+  tags:
+    - pip
+    - python
+
+- name: Get additional binaries
+  include: binary.yml
+  tags:
+    - binary
+
+- name: Configure SSH Keys
+  include: ssh-keys.yml
+  tags:
+    - ssh
+    - keys
+
+- name: Configure Apache
+  include: apache.yml
+  tags:
+    - apache
+    - httpd
+
+- name: Configure Desktop
+  include: desktop.yml
+  tags:
+    - desktop
+    - xfce
+
+- name: Configure Atom
+  include: apm.yml
+  tags:
+    - apm
+    - atom
