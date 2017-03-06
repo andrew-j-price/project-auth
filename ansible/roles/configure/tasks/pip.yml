@@ -1,10 +1,18 @@
+---
+
+- name: Install latest packages via pip
+  pip:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - pip
+    - setuptools
+
 - name: Install packages via pip
   pip:
     name: "{{ item }}"
     state: present
   with_items:
-    - pip
-    - setuptools
     - ansible
     - autopep8
     - docker-compose
@@ -29,5 +37,5 @@
     - requests
     - shade
     - six
-    - uwsgi
+    - supervisor
     - virtualenv

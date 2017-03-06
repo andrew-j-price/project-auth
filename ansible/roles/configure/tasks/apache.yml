@@ -8,7 +8,7 @@
   yum:
     name: "{{ item }}"
     state: present
-    update_cache: yes
+    update_cache: no
   with_items:
     - "httpd"
     - "mod_wsgi"
@@ -19,16 +19,26 @@
     name: wsgi
 
 - name: Copy httpd conf files
-  copy:
-    src: "apache-conf/{{ item }}"
-    dest: "/etc/httpd/conf.d/{{ item }}"
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
     owner: root
     group: root
     mode: 0644
+    backup: no
   with_items:
-    - "default.conf.bak"
-    - "host.conf"
-    - "virtual-directory.conf"
+    - info:
+      src: httpd.conf.j2
+      dest: /etc/httpd/conf/httpd.conf
+    - info:
+      src: apache-conf/host.conf
+      dest: /etc/httpd/conf.d/host.conf
+    - info:
+      src: apache-conf/rps.conf
+      dest: /etc/httpd/conf.d/rps.conf
+    - info:
+      src: apache-conf/virtual-directory.conf
+      dest: /etc/httpd/conf.d/virtual-directory.conf
   notify:
     - "restart httpd"
 

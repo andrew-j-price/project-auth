@@ -25,11 +25,25 @@
     - ssh
     - keys
 
+- name: Configure Supervisord
+  include: supervisord.yml
+  tags:
+    - supervisor
+    - supervisord
+    - web
+
 - name: Configure Apache
   include: apache.yml
   tags:
     - apache
     - httpd
+    - web
+
+- name: Configure Nginx
+  include: nginx.yml
+  tags:
+    - nginx
+    - web
 
 - name: Configure Desktop
   include: desktop.yml

@@ -1,5 +1,10 @@
 ---
 
+apache_default_port: "8080"
+apache_rps_port: "8081"
+nginx_default_port: "80"
+nginx_rps_port: "81"
+
 atom_source_location: 'https://github.com/atom/atom/releases/download/v1.14.3/atom.x86_64.rpm'
 atom_download_destination: '/var/tmp/atom_install.rpm'
 

@@ -1,0 +1,45 @@
+---
+
+- selinux:
+    policy: targeted
+    state: permissive
+
+- name: Install packages for Nginx
+  yum:
+    name: "{{ item }}"
+    state: present
+    update_cache: no
+  with_items:
+    - "nginx"
+
+- name: Copy nginx conf file
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: 0644
+    backup: no
+  notify:
+    - "restart nginx"
+
+- name: Set symbolic links for file editing
+  file:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    state: link
+  with_items:
+    - info:
+      src: /etc/nginx/
+      dest: /root/nginx-conf
+    - info:
+      src: /usr/share/nginx/
+      dest: /root/nginx-data
+
+- name: Start the service and enable on startup
+  service:
+    name: "{{ item }}"
+    enabled: yes
+    state: started
+  with_items:
+    - nginx

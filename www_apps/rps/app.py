@@ -1,9 +1,9 @@
-import os
 from flask import Flask, render_template, request
 from rps import RPS
 rps = RPS()
 
 app = Flask(__name__)
+
 
 @app.route('/', strict_slashes=False, methods=["GET", "POST"])
 def index():
@@ -12,7 +12,7 @@ def index():
         player_choice = request.form["my_selection"]
         computer_choice = rps.computer_choose()
         winner = rps.play(player_choice, computer_choice)
-        match_output = rps.result_of(player_choice, computer_choice, winner)  # noqa: E50
+        match_output = rps.result_of(player_choice, computer_choice, winner)
         totals_output = rps.results_total()
         return render_template("index.html",
                                match_output=match_output,
@@ -20,8 +20,3 @@ def index():
     # If GET request, reset the counters and start fresh
     rps.__init__()
     return render_template("index.html")
-
-
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port, debug=True)

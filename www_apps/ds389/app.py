@@ -18,10 +18,8 @@ ldap = LDAP(app)
 
 
 @app.route('/')
+@app.route("/389ds", strict_slashes=False)
+@app.route("/ds389", strict_slashes=False)
 @ldap.basic_auth_required
 def index():
     return 'Welcome, {0}!'.format(g.ldap_username)
-
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
